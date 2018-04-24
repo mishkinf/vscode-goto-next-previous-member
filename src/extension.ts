@@ -13,38 +13,46 @@ export function activate(context: vscode.ExtensionContext) {
     )) || [];
   };
 
+  const activeEditorChangeListener = vscode.window.onDidChangeActiveTextEditor(e => {
+    dirtyTree = true;
+    tree = [];
+    symbolIndex = 0;
+  });
   const documentChangeListener = vscode.workspace.onDidChangeTextDocument(e => {
     dirtyTree = true;
+    tree = [];
+    symbolIndex = 0;
   });
 
-  const setSymbolIndex = (currentLine: number, directionNext: boolean) => {
+  const setSymbolIndex = (cursorLine: number, cursorCharacter: number, directionNext: boolean) => {
+    let member;
+
     if(directionNext) {
       symbolIndex = -1;
       do {
         symbolIndex++;
-      } while (tree[symbolIndex] && currentLine > tree[symbolIndex].location.range.start.line);
+        member = tree[symbolIndex].location.range.start;
+      } while (member.line < cursorLine || member.line === cursorLine && member.character <= cursorCharacter);
+
     } else {
       symbolIndex = tree.length;
       do {
         symbolIndex--;
-      } while (tree[symbolIndex] && currentLine <= tree[symbolIndex].location.range.start.line);
+        member = tree[symbolIndex].location.range.start;
+      } while (member.line > cursorLine || member.line === cursorLine && member.character >= cursorCharacter);
     }
   };
 
   const previousMemberCommand = vscode.commands.registerTextEditorCommand("gotoNextPreviousMember.previousMember", async (editor: vscode.TextEditor) => {
       let symbol;
 
-      if (!tree || dirtyTree) {
-        refreshTree(editor);
-        setSymbolIndex(editor.selection.active.line, false);
+      if (tree.length === 0 || dirtyTree) {
+        await refreshTree(editor);
         dirtyTree = false;
-      } else {
-        if (symbolIndex >= 0) {
-          symbolIndex--;
-        } else {
-          symbolIndex = 0;
-        }
       }
+
+      const activeCursor = editor.selection.active;
+      setSymbolIndex(activeCursor.line, activeCursor.character, false);
 
       symbol = tree[symbolIndex];
 
@@ -56,42 +64,35 @@ export function activate(context: vscode.ExtensionContext) {
           symbol.location.range.start.character
         );
         vscode.commands.executeCommand("revealLine", {
-          lineNumber: symbol.location.range.start.line,
-          at: "center"
+          lineNumber: symbol.location.range.start.line
         });
       }
-
-      console.log("Previous Member");
+      vscode.window.setStatusBarMessage("Previous Member", 1000);
     }
   );
 
   const nextMemberCommand = vscode.commands.registerTextEditorCommand("gotoNextPreviousMember.nextMember", async (editor: vscode.TextEditor) => {
       let symbol;
 
-      if (!tree || dirtyTree) {
-        refreshTree(editor);
-        setSymbolIndex(editor.selection.active.line, true);
-      } else {
-        if (symbolIndex < tree.length) {
-          symbolIndex++;
-        } else {
-          symbolIndex = tree.length - 1;
-        }
+      if (tree.length === 0 || dirtyTree) {
+        await refreshTree(editor);
+        dirtyTree = false;
       }
+
+      const activeCursor = editor.selection.active;
+      setSymbolIndex(activeCursor.line, activeCursor.character, true);
 
       symbol = tree[symbolIndex];
 
       if (symbol) {
         editor.selection = new vscode.Selection(symbol.location.range.start.line, symbol.location.range.start.character, symbol.location.range.start.line, symbol.location.range.start.character);
         vscode.commands.executeCommand("revealLine", {
-          lineNumber: symbol.location.range.start.line,
-          at: "center"
+          lineNumber: symbol.location.range.start.line
         });
       }
-
-      console.log("Next Member");
+      vscode.window.setStatusBarMessage("Next Member", 1000);
     }
   );
 
-  context.subscriptions.push(previousMemberCommand, nextMemberCommand, documentChangeListener);
+  context.subscriptions.push(previousMemberCommand, nextMemberCommand, documentChangeListener, activeEditorChangeListener);
 }

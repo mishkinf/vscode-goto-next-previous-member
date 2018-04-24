@@ -1,9 +1,10 @@
 {
     "name": "goto-next-previous-member",
     "displayName": "Go to Next/Previous Member",
-    "description": "vscode Extenion to navigate through the functions, variables, and classes using quick and easy keycommands similar to functionality provided by IntelliJ IDE's (next/previous function) or Resharper (next/previous member)",
+    "description": "Visual Studio Code Extenion to navigate through the functions, variables, and classes using quick and easy keycommands similar to functionality provided by IntelliJ IDE's (next/previous function) or Resharper (next/previous member)",
     "version": "0.0.1",
     "publisher": "mishkinf",
+    "icon": "logo/icon.png",
     "engines": {
         "vscode": "^1.22.0"
     },
