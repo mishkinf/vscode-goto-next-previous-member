@@ -31,7 +31,7 @@ See [CHANGELOG.md](CHANGELOG.md)
 
 ---------------------------------------------------------------------------------------
 
-### More Visual Studio Code Extenions by `mishkinf`
+### More Visual Studio Code Extensions by `mishkinf`
 
 #### [Visual Studio Code Navigate Edits History - Goto Last Edit](https://github.com/mishkinf/vscode-edits-history)
 
