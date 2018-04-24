@@ -8,17 +8,17 @@
     "engines": {
         "vscode": "^1.22.0"
     },
+    "categories": [
+        "Other"
+    ],
     "bugs": {
         "url": "https://github.com/mishkinf/vscode-goto-next-previous-member/issues"
     },
     "homepage": "https://github.com/mishkinf/vscode-goto-next-previous-member",
     "repository": {
         "type": "git",
-        "url": "git@github.com:mishkinf/vscode-goto-next-previous-member.git"
+        "url": "https://github.com/mishkinf/vscode-goto-next-previous-member.git"
     },
-    "categories": [
-        "Other"
-    ],
     "activationEvents": [
         "*"
     ],
