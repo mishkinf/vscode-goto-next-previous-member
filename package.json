@@ -1,7 +1,7 @@
 {
-    "name": "goto-next-member",
-    "displayName": "Goto Next Member",
-    "description": "vscode Extenion to navigate through the functions, variables, and classes using quick and easy keycommands similar to functionality provided by IntelliJ IDE's",
+    "name": "goto-next-previous-member",
+    "displayName": "Go to Next/Previous Member",
+    "description": "vscode Extenion to navigate through the functions, variables, and classes using quick and easy keycommands similar to functionality provided by IntelliJ IDE's (next/previous function) or Resharper (next/previous member)",
     "version": "0.0.1",
     "publisher": "mishkinf",
     "engines": {
@@ -11,14 +11,29 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "*"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.sayHello",
-                "title": "Hello World"
+                "command": "gotoNextPreviousMember.nextMember",
+                "title": "Go to Next Member"
+
+            },
+            {
+                "command": "gotoNextPreviousMember.previousMember",
+                "title": "Go to Previous Member"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "gotoNextPreviousMember.nextMember",
+                "key": "ctrl+down"
+            },
+            {
+                "command": "gotoNextPreviousMember.previousMember",
+                "key": "ctrl+up"
             }
         ]
     },
