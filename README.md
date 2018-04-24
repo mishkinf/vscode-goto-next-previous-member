@@ -6,7 +6,7 @@ Visual Studio Code Extenion to navigate through the functions, variables, and cl
 
 This Extension provides two key commands to navigate up and down through the members in your file.
 
-\!\[Next Previous Member Demo\]\(demo.gif\)
+![Next Previous Member Demo](demo.gif)
 
 ## Requirements
 
