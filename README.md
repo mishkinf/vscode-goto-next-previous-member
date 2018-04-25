@@ -50,7 +50,12 @@ Please report any missing extensions and I'll update the list.
 
 ## Known Issues
 
-No known issues.
+If you are experiencing no movement upon running the command:
+
+I have observed an issue with the Visual Studio API to return symbols from `vscode.executeDocumentSymbolProvider`. One way I have found to possibly fix the issue is to disable all extensions, restart Visual Studio and then enable all extensions and restart again.
+
+Possible Related Issue:
+[https://github.com/OmniSharp/omnisharp-vscode/issues/2192](https://github.com/OmniSharp/omnisharp-vscode/issues/2192)
 
 ## Release Notes
 

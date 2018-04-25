@@ -9,3 +9,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Feature to navigate to previous member
 - Feature to navigate to next member
+
+------------------------------------------------------------------------------------------------------
+
+## [0.0.2] - 2018-04-24
+
+### Changed
+
+- Updated README
