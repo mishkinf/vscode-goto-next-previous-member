@@ -10,7 +10,7 @@ This Extension provides two key commands to navigate up and down through the mem
 
 ## Requirements
 
-vscode@1.22.0+
+vscode@1.28.0+
 
 ## Extension Settings
 
