@@ -3,14 +3,38 @@ import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
   let symbolIndex = 0;
-  let tree: Array<vscode.SymbolInformation> = [];
+  let tree: Array<vscode.DocumentSymbol> = [];
   let dirtyTree = true;
 
   const refreshTree = async (editor: vscode.TextEditor) => {
-    tree = (await vscode.commands.executeCommand<vscode.SymbolInformation[]>(
+    tree = (await vscode.commands.executeCommand<(vscode.DocumentSymbol)[]>(
       "vscode.executeDocumentSymbolProvider",
       editor.document.uri
-    )) || [];
+    ).then(results => {
+      if(!results) {
+        return [];
+      }
+
+      const flattenedSymbols: vscode.DocumentSymbol[] = [];
+      const addSymbols = (flattenedSymbols: vscode.DocumentSymbol[], results: vscode.DocumentSymbol[]) => {
+        results.forEach((symbol: vscode.DocumentSymbol) => {
+          flattenedSymbols.push(symbol);
+          if(symbol.children && symbol.children.length > 0) {
+            addSymbols(flattenedSymbols, symbol.children);
+          }
+        });
+      };
+
+      addSymbols(flattenedSymbols, results);
+
+      return flattenedSymbols.sort((x: vscode.DocumentSymbol, y: vscode.DocumentSymbol) => {
+        const lineDiff = x.range.start.line - y.range.start.line;
+        if(lineDiff === 0) {
+          return x.range.start.character - y.range.start.character;
+        }
+        return lineDiff;
+      });
+    })) || [];
   };
 
   const activeEditorChangeListener = vscode.window.onDidChangeActiveTextEditor(e => {
@@ -18,6 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
     tree = [];
     symbolIndex = 0;
   });
+
   const documentChangeListener = vscode.workspace.onDidChangeTextDocument(e => {
     dirtyTree = true;
     tree = [];
@@ -31,14 +56,13 @@ export function activate(context: vscode.ExtensionContext) {
       symbolIndex = -1;
       do {
         symbolIndex++;
-        member = tree[symbolIndex].location.range.start;
+        member = tree[symbolIndex].range.start;
       } while (member.line < cursorLine || member.line === cursorLine && member.character <= cursorCharacter);
-
     } else {
       symbolIndex = tree.length;
       do {
         symbolIndex--;
-        member = tree[symbolIndex].location.range.start;
+        member = tree[symbolIndex].range.start;
       } while (member.line > cursorLine || member.line === cursorLine && member.character >= cursorCharacter);
     }
   };
@@ -58,13 +82,13 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (symbol) {
         editor.selection = new vscode.Selection(
-          symbol.location.range.start.line,
-          symbol.location.range.start.character,
-          symbol.location.range.start.line,
-          symbol.location.range.start.character
+          symbol.range.start.line,
+          symbol.range.start.character,
+          symbol.range.start.line,
+          symbol.range.start.character
         );
         vscode.commands.executeCommand("revealLine", {
-          lineNumber: symbol.location.range.start.line
+          lineNumber: symbol.range.start.line
         });
       }
       vscode.window.setStatusBarMessage("Previous Member", 1000);
@@ -85,9 +109,9 @@ export function activate(context: vscode.ExtensionContext) {
       symbol = tree[symbolIndex];
 
       if (symbol) {
-        editor.selection = new vscode.Selection(symbol.location.range.start.line, symbol.location.range.start.character, symbol.location.range.start.line, symbol.location.range.start.character);
+        editor.selection = new vscode.Selection(symbol.range.start.line, symbol.range.start.character, symbol.range.start.line, symbol.range.start.character);
         vscode.commands.executeCommand("revealLine", {
-          lineNumber: symbol.location.range.start.line
+          lineNumber: symbol.range.start.line
         });
       }
       vscode.window.setStatusBarMessage("Next Member", 1000);

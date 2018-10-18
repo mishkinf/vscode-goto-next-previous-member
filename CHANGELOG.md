@@ -17,3 +17,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Changed
 
 - Updated README
+
+------------------------------------------------------------------------------------------------------
+
+## [0.0.3] - 2018-10-18
+
+### Changed
+
+- Updated packages to address npm security vulnerabily
+- Using DocumentSymbolProvider
+
+### Fixed
+
+- Fixing issue where I forgot to walk the entire symbol tree.
