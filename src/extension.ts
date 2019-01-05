@@ -2,9 +2,61 @@
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
+  let symbolKindsSet: Set<string>;
   let symbolIndex = 0;
   let tree: Array<vscode.DocumentSymbol> = [];
   let dirtyTree = true;
+
+  const reloadConfiguration = () => {
+    // Get the array of allowed symbols from the config file
+    let symbolKindsArray: Array<string> | undefined = vscode.workspace.getConfiguration().get<Array<string>>("gotoNextPreviousMember.symbolKinds");
+
+    // If it's empty there's nothing to do...
+    if (symbolKindsArray === undefined) {
+      return;
+    }
+
+    // Convert to lowercase make config file case-insensitive
+    symbolKindsArray = symbolKindsArray.map(key => key.toLowerCase());
+
+    // Convert to a Set for faster lookups
+    symbolKindsSet = new Set<string>(symbolKindsArray);
+
+    // Reload the symbol tree
+    dirtyTree = true;
+  };
+
+  const checkSymbolKindPermitted = (symbolKind : vscode.SymbolKind) : boolean => {
+    // https://code.visualstudio.com/api/references/vscode-api#SymbolKind
+    return symbolKindsSet.size === 0 || (
+      (symbolKind === vscode.SymbolKind.Array         && symbolKindsSet.has("array")        ) ||
+      (symbolKind === vscode.SymbolKind.Boolean       && symbolKindsSet.has("boolean")      ) ||
+      (symbolKind === vscode.SymbolKind.Class         && symbolKindsSet.has("class")        ) ||
+      (symbolKind === vscode.SymbolKind.Constant      && symbolKindsSet.has("constant")     ) ||
+      (symbolKind === vscode.SymbolKind.Constructor   && symbolKindsSet.has("constructor")  ) ||
+      (symbolKind === vscode.SymbolKind.Enum          && symbolKindsSet.has("enum")         ) ||
+      (symbolKind === vscode.SymbolKind.EnumMember    && symbolKindsSet.has("enummember")   ) ||
+      (symbolKind === vscode.SymbolKind.Event         && symbolKindsSet.has("event")        ) ||
+      (symbolKind === vscode.SymbolKind.Field         && symbolKindsSet.has("field")        ) ||
+      (symbolKind === vscode.SymbolKind.File          && symbolKindsSet.has("file")         ) ||
+      (symbolKind === vscode.SymbolKind.Function      && symbolKindsSet.has("function")     ) ||
+      (symbolKind === vscode.SymbolKind.Interface     && symbolKindsSet.has("interface")    ) ||
+      (symbolKind === vscode.SymbolKind.Key           && symbolKindsSet.has("key")          ) ||
+      (symbolKind === vscode.SymbolKind.Method        && symbolKindsSet.has("method")       ) ||
+      (symbolKind === vscode.SymbolKind.Module        && symbolKindsSet.has("module")       ) ||
+      (symbolKind === vscode.SymbolKind.Namespace     && symbolKindsSet.has("namespace")    ) ||
+      (symbolKind === vscode.SymbolKind.Null          && symbolKindsSet.has("null")         ) ||
+      (symbolKind === vscode.SymbolKind.Number        && symbolKindsSet.has("number")       ) ||
+      (symbolKind === vscode.SymbolKind.Object        && symbolKindsSet.has("object")       ) ||
+      (symbolKind === vscode.SymbolKind.Operator      && symbolKindsSet.has("operator")     ) ||
+      (symbolKind === vscode.SymbolKind.Package       && symbolKindsSet.has("package")      ) ||
+      (symbolKind === vscode.SymbolKind.Property      && symbolKindsSet.has("property")     ) ||
+      (symbolKind === vscode.SymbolKind.String        && symbolKindsSet.has("string")       ) ||
+      (symbolKind === vscode.SymbolKind.Struct        && symbolKindsSet.has("struct")       ) ||
+      (symbolKind === vscode.SymbolKind.TypeParameter && symbolKindsSet.has("typeparameter")) ||
+      (symbolKind === vscode.SymbolKind.Variable      && symbolKindsSet.has("variable")     )
+    );
+  };
 
   const refreshTree = async (editor: vscode.TextEditor) => {
     tree = (await vscode.commands.executeCommand<(vscode.DocumentSymbol)[]>(
@@ -18,7 +70,9 @@ export function activate(context: vscode.ExtensionContext) {
       const flattenedSymbols: vscode.DocumentSymbol[] = [];
       const addSymbols = (flattenedSymbols: vscode.DocumentSymbol[], results: vscode.DocumentSymbol[]) => {
         results.forEach((symbol: vscode.DocumentSymbol) => {
-          flattenedSymbols.push(symbol);
+          if(checkSymbolKindPermitted(symbol.kind)) {
+            flattenedSymbols.push(symbol);
+          }
           if(symbol.children && symbol.children.length > 0) {
             addSymbols(flattenedSymbols, symbol.children);
           }
@@ -75,6 +129,11 @@ export function activate(context: vscode.ExtensionContext) {
         dirtyTree = false;
       }
 
+      // If there are still no symbols skip the rest of the function
+      if (tree.length === 0) {
+        return;
+      }
+
       const activeCursor = editor.selection.active;
       setSymbolIndex(activeCursor.line, activeCursor.character, false);
 
@@ -103,6 +162,11 @@ export function activate(context: vscode.ExtensionContext) {
         dirtyTree = false;
       }
 
+      // If there are still no symbols skip the rest of the function
+      if (tree.length === 0) {
+        return;
+      }
+
       const activeCursor = editor.selection.active;
       setSymbolIndex(activeCursor.line, activeCursor.character, true);
 
@@ -118,5 +182,15 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
+		if (e.affectsConfiguration('gotoNextPreviousMember.symbolKinds')) {
+			if (vscode.window.activeTextEditor) {
+				reloadConfiguration();
+			}
+		}
+	}));
+
   context.subscriptions.push(previousMemberCommand, nextMemberCommand, documentChangeListener, activeEditorChangeListener);
+
+  reloadConfiguration();
 }

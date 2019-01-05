@@ -5,5 +5,35 @@
     },
     "search.exclude": {
         "out": true // set this to false to include "out" folder in search results
-    }
+    },
+
+    // An empty array will enable all symbols
+    "gotoNextPreviousMember.symbolKinds": [
+      // "array",
+      // "boolean",
+      // "class",
+      // "constant",
+      // "constructor",
+      // "enum",
+      // "enummember",
+      // "event",
+      // "field",
+      // "file",
+      // "function",
+      // "interface",
+      // "key",
+      // "method",
+      // "module",
+      // "namespace",
+      // "null",
+      // "number",
+      // "object",
+      // "operator",
+      // "package",
+      // "property",
+      // "string",
+      // "struct",
+      // "typeparameter",
+      // "variable"
+    ]
 }
