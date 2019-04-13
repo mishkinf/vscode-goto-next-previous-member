@@ -2,7 +2,7 @@
     "name": "goto-next-previous-member",
     "displayName": "Go to Next/Previous Member",
     "description": "Visual Studio Code Extenion to navigate through the functions, variables, and classes using quick and easy keycommands similar to functionality provided by IntelliJ IDE's (next/previous function) or Resharper (next/previous member)",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "publisher": "mishkinf",
     "icon": "logo/icon.png",
     "engines": {
@@ -43,7 +43,18 @@
                 "command": "gotoNextPreviousMember.previousMember",
                 "key": "ctrl+up"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Go to Next/Previous Member Configuration",
+            "properties": {
+                "gotoNextPreviousMember.symbolKinds": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Specifies the kinds of symbols to include in the search."
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

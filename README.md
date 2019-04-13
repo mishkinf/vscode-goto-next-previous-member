@@ -1,6 +1,6 @@
 # vscode-goto-next-previous-member
 
-Visual Studio Code Extenion to navigate through the functions, variables, and classes using quick and easy keycommands similar to functionality provided by IntelliJ IDE's (next/previous function)or Resharper (next/previous member)
+Visual Studio Code Extension to navigate through the functions, variables, and classes using quick and easy keycommands similar to functionality provided by IntelliJ IDE's (next/previous function) or Resharper (next/previous member)
 
 ## Features
 
@@ -20,6 +20,39 @@ This extension contributes the following customizable Keyboard Shortcuts:
 | -------------------------------------------- |:------------------------- | :-----------|
 | `gotoNextPreviousMember.previousMember`      | Move To Previous Member   | ctrl+up     |
 | `gotoNextPreviousMember.nextMember`          | Move To Next Member       | ctrl+down   |
+
+and the `gotoNextPreviousMember.symbolKinds` configuration setting which accepts an array containing any of the following values:
+
+| Symbol Kind     |
+| --------------- |
+| "array"         |
+| "boolean"       |
+| "class"         |
+| "constant"      |
+| "constructor"   |
+| "enum"          |
+| "enummember"    |
+| "event"         |
+| "field"         |
+| "file"          |
+| "function"      |
+| "interface"     |
+| "key"           |
+| "method"        |
+| "module"        |
+| "namespace"     |
+| "null"          |
+| "number"        |
+| "object"        |
+| "operator"      |
+| "package"       |
+| "property"      |
+| "string"        |
+| "struct"        |
+| "typeparameter" |
+| "variable"      |
+
+All of the symbol kinds specified in the array will be used when moving to the next/previous symbol, omitted symbol kinds will be skipped. If an empty array is provided, all symbol kinds will be used (this is the default).
 
 ## Language Support
 
