@@ -82,9 +82,9 @@ export function activate(context: vscode.ExtensionContext) {
       addSymbols(flattenedSymbols, results);
 
       return flattenedSymbols.sort((x: vscode.DocumentSymbol, y: vscode.DocumentSymbol) => {
-        const lineDiff = x.range.start.line - y.range.start.line;
+        const lineDiff = x.selectionRange.start.line - y.selectionRange.start.line;
         if(lineDiff === 0) {
-          return x.range.start.character - y.range.start.character;
+          return x.selectionRange.start.character - y.selectionRange.start.character;
         }
         return lineDiff;
       });
@@ -110,13 +110,13 @@ export function activate(context: vscode.ExtensionContext) {
       symbolIndex = -1;
       do {
         symbolIndex++;
-        member = tree[symbolIndex].range.start;
+        member = tree[symbolIndex].selectionRange.start;
       } while (member.line < cursorLine || member.line === cursorLine && member.character <= cursorCharacter);
     } else {
       symbolIndex = tree.length;
       do {
         symbolIndex--;
-        member = tree[symbolIndex].range.start;
+        member = tree[symbolIndex].selectionRange.start;
       } while (member.line > cursorLine || member.line === cursorLine && member.character >= cursorCharacter);
     }
   };
@@ -141,13 +141,13 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (symbol) {
         editor.selection = new vscode.Selection(
-          symbol.range.start.line,
-          symbol.range.start.character,
-          symbol.range.start.line,
-          symbol.range.start.character
+          symbol.selectionRange.start.line,
+          symbol.selectionRange.start.character,
+          symbol.selectionRange.start.line,
+          symbol.selectionRange.start.character
         );
         vscode.commands.executeCommand("revealLine", {
-          lineNumber: symbol.range.start.line
+          lineNumber: symbol.selectionRange.start.line
         });
       }
       vscode.window.setStatusBarMessage("Previous Member", 1000);
@@ -173,9 +173,14 @@ export function activate(context: vscode.ExtensionContext) {
       symbol = tree[symbolIndex];
 
       if (symbol) {
-        editor.selection = new vscode.Selection(symbol.range.start.line, symbol.range.start.character, symbol.range.start.line, symbol.range.start.character);
+        editor.selection = new vscode.Selection(
+          symbol.selectionRange.start.line,
+          symbol.selectionRange.start.character,
+          symbol.selectionRange.start.line,
+          symbol.selectionRange.start.character
+        );
         vscode.commands.executeCommand("revealLine", {
-          lineNumber: symbol.range.start.line
+          lineNumber: symbol.selectionRange.start.line
         });
       }
       vscode.window.setStatusBarMessage("Next Member", 1000);
@@ -183,12 +188,12 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
-		if (e.affectsConfiguration('gotoNextPreviousMember.symbolKinds')) {
-			if (vscode.window.activeTextEditor) {
-				reloadConfiguration();
-			}
-		}
-	}));
+    if (e.affectsConfiguration('gotoNextPreviousMember.symbolKinds')) {
+      if (vscode.window.activeTextEditor) {
+        reloadConfiguration();
+      }
+    }
+  }));
 
   context.subscriptions.push(previousMemberCommand, nextMemberCommand, documentChangeListener, activeEditorChangeListener);
 
