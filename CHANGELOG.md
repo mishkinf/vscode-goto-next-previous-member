@@ -30,3 +30,19 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 
 - Fixing issue where I forgot to walk the entire symbol tree.
+
+------------------------------------------------------------------------------------------------------
+
+## [0.0.4] - 2019-1-5
+
+### ADDED
+
+- CONFIGURATION: Set which symbols you wish to manuever between
+
+------------------------------------------------------------------------------------------------------
+
+## [0.0.5] - 2019-4-24
+
+### Fixed
+
+- JAVA: Issue where cursor would move to the beginning of comments instead of to symbol
