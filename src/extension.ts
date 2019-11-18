@@ -103,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
     symbolIndex = 0;
   });
 
-  const setSymbolIndex = (cursorLine: number, cursorCharacter: number, directionNext: boolean) => {
+  const setSymbolIndex = (cursorLine: number, cursorCharacter: number, directionNext: boolean, prevSymbolIndex: number) => {
     let member;
 
     if(directionNext) {
@@ -111,13 +111,13 @@ export function activate(context: vscode.ExtensionContext) {
       do {
         symbolIndex++;
         member = tree[symbolIndex].selectionRange.start;
-      } while (member.line < cursorLine || member.line === cursorLine && member.character <= cursorCharacter);
+      } while ((member.line < cursorLine || member.line === cursorLine && member.character <= cursorCharacter || symbolIndex === prevSymbolIndex) && symbolIndex < tree.length - 1);
     } else {
       symbolIndex = tree.length;
       do {
         symbolIndex--;
         member = tree[symbolIndex].selectionRange.start;
-      } while (member.line > cursorLine || member.line === cursorLine && member.character >= cursorCharacter);
+      } while ((member.line > cursorLine || member.line === cursorLine && member.character >= cursorCharacter || symbolIndex === prevSymbolIndex) && symbolIndex > 0);
     }
   };
 
@@ -135,16 +135,19 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const activeCursor = editor.selection.active;
-      setSymbolIndex(activeCursor.line, activeCursor.character, false);
+      setSymbolIndex(activeCursor.line, activeCursor.character, false, symbolIndex);
 
       symbol = tree[symbolIndex];
+
+      const selectionRangeText = editor.document.getText(symbol.selectionRange);
+      const nameIndex = Math.max(0, selectionRangeText.indexOf(symbol.name));
 
       if (symbol) {
         editor.selection = new vscode.Selection(
           symbol.selectionRange.start.line,
-          symbol.selectionRange.start.character,
+          symbol.selectionRange.start.character + nameIndex,
           symbol.selectionRange.start.line,
-          symbol.selectionRange.start.character
+          symbol.selectionRange.start.character + nameIndex
         );
         vscode.commands.executeCommand("revealLine", {
           lineNumber: symbol.selectionRange.start.line
@@ -168,16 +171,19 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const activeCursor = editor.selection.active;
-      setSymbolIndex(activeCursor.line, activeCursor.character, true);
+      setSymbolIndex(activeCursor.line, activeCursor.character, true, symbolIndex);
 
       symbol = tree[symbolIndex];
+
+      const selectionRangeText = editor.document.getText(symbol.selectionRange);
+      const nameIndex = Math.max(0, selectionRangeText.indexOf(symbol.name));
 
       if (symbol) {
         editor.selection = new vscode.Selection(
           symbol.selectionRange.start.line,
-          symbol.selectionRange.start.character,
+          symbol.selectionRange.start.character + nameIndex,
           symbol.selectionRange.start.line,
-          symbol.selectionRange.start.character
+          symbol.selectionRange.start.character + nameIndex
         );
         vscode.commands.executeCommand("revealLine", {
           lineNumber: symbol.selectionRange.start.line
