@@ -73,6 +73,7 @@ Here is a list of languages known to work with Code Outline:
 | JavaScript | Comes with VS Code |
 | JSON | Comes with VS Code |
 | Markdown | Comes with VS Code |
+| ruby |  [Ruby Symbols](https://marketplace.visualstudio.com/items?itemName=miguel-savignano.ruby-symbols) |
 | Perl | [Perl](https://marketplace.visualstudio.com/items?itemName=henriiik.vscode-perl) |
 | PHP | [PHP Symbols](https://marketplace.visualstudio.com/items?itemName=linyang95.php-symbols) |
 | Python | [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) |
