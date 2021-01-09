@@ -69,5 +69,8 @@
         "tslint": "^5.8.0",
         "typescript": "^2.6.1",
         "vscode": "^1.1.21"
-    }
+    },
+    "extensionKind": [
+        "ui"
+    ]
 }
