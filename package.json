@@ -20,7 +20,7 @@
     "url": "https://github.com/mishkinf/vscode-goto-next-previous-member.git"
   },
   "activationEvents": [
-    "*"
+    "onStartupFinished"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -65,9 +65,9 @@
   },
   "devDependencies": {
     "@types/mocha": "^2.2.42",
-    "@types/node": "^8.10.25",
+    "@types/node": "^17.0.10",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.1",
+    "typescript": "^4.5.4",
     "vscode": "^1.1.21"
   },
   "extensionKind": [
