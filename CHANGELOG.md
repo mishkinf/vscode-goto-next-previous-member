@@ -46,3 +46,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 
 - JAVA: Issue where cursor would move to the beginning of comments instead of to symbol
+
+------------------------------------------------------------------------------------------------------
+
+## [0.0.6] - 2022-1-18
+
+### Fixed
+
+- Updating vulnerable packages
+- Marking extension as a UI extension

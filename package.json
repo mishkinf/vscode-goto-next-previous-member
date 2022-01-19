@@ -1,76 +1,76 @@
 {
-    "name": "goto-next-previous-member",
-    "displayName": "Go to Next/Previous Member",
-    "description": "Visual Studio Code Extenion to navigate through the functions, variables, and classes using quick and easy keycommands similar to functionality provided by IntelliJ IDE's (next/previous function) or Resharper (next/previous member)",
-    "version": "0.0.5",
-    "publisher": "mishkinf",
-    "icon": "logo/icon.png",
-    "engines": {
-        "vscode": "^1.28.0"
-    },
-    "categories": [
-        "Other"
+  "name": "goto-next-previous-member",
+  "displayName": "Go to Next/Previous Member",
+  "description": "Visual Studio Code Extenion to navigate through the functions, variables, and classes using quick and easy keycommands similar to functionality provided by IntelliJ IDE's (next/previous function) or Resharper (next/previous member)",
+  "version": "0.0.6",
+  "publisher": "mishkinf",
+  "icon": "logo/icon.png",
+  "engines": {
+    "vscode": "^1.28.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "bugs": {
+    "url": "https://github.com/mishkinf/vscode-goto-next-previous-member/issues"
+  },
+  "homepage": "https://github.com/mishkinf/vscode-goto-next-previous-member",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mishkinf/vscode-goto-next-previous-member.git"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "gotoNextPreviousMember.nextMember",
+        "title": "Go to Next Member"
+      },
+      {
+        "command": "gotoNextPreviousMember.previousMember",
+        "title": "Go to Previous Member"
+      }
     ],
-    "bugs": {
-        "url": "https://github.com/mishkinf/vscode-goto-next-previous-member/issues"
-    },
-    "homepage": "https://github.com/mishkinf/vscode-goto-next-previous-member",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/mishkinf/vscode-goto-next-previous-member.git"
-    },
-    "activationEvents": [
-        "*"
+    "keybindings": [
+      {
+        "command": "gotoNextPreviousMember.nextMember",
+        "key": "ctrl+down"
+      },
+      {
+        "command": "gotoNextPreviousMember.previousMember",
+        "key": "ctrl+up"
+      }
     ],
-    "main": "./out/extension",
-    "contributes": {
-        "commands": [
-            {
-                "command": "gotoNextPreviousMember.nextMember",
-                "title": "Go to Next Member"
-            },
-            {
-                "command": "gotoNextPreviousMember.previousMember",
-                "title": "Go to Previous Member"
-            }
-        ],
-        "keybindings": [
-            {
-                "command": "gotoNextPreviousMember.nextMember",
-                "key": "ctrl+down"
-            },
-            {
-                "command": "gotoNextPreviousMember.previousMember",
-                "key": "ctrl+up"
-            }
-        ],
-        "configuration": {
-            "type": "object",
-            "title": "Go to Next/Previous Member Configuration",
-            "properties": {
-                "gotoNextPreviousMember.symbolKinds": {
-                    "type": "array",
-                    "default": [],
-                    "description": "Specifies the kinds of symbols to include in the search."
-                }
-            }
+    "configuration": {
+      "type": "object",
+      "title": "Go to Next/Previous Member Configuration",
+      "properties": {
+        "gotoNextPreviousMember.symbolKinds": {
+          "type": "array",
+          "default": [],
+          "description": "Specifies the kinds of symbols to include in the search."
         }
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
-    },
-    "devDependencies": {
-        "@types/mocha": "^2.2.42",
-        "@types/node": "^8.10.25",
-        "tslint": "^5.8.0",
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.21"
-    },
-    "extensionKind": [
-        "ui"
-    ]
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^8.10.25",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.21"
+  },
+  "extensionKind": [
+    "ui"
+  ]
 }
