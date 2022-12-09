@@ -4,7 +4,6 @@ import * as vscode from 'vscode';
 export function activate(context: vscode.ExtensionContext) {
   let configuredSymbolKindsSet: Set<string>;
   let workingSymbolKindsSet: Set<string>;
-  let symbolIndex = 0;
   let tree: Array<vscode.DocumentSymbol> = [];
   let dirtyTree = true;
 
@@ -93,34 +92,33 @@ export function activate(context: vscode.ExtensionContext) {
   const activeEditorChangeListener = vscode.window.onDidChangeActiveTextEditor(e => {
     dirtyTree = true;
     tree = [];
-    symbolIndex = 0;
   });
 
   const documentChangeListener = vscode.workspace.onDidChangeTextDocument(e => {
     dirtyTree = true;
     tree = [];
-    symbolIndex = 0;
   });
 
-  const setSymbolIndex = (cursorLine: number, cursorCharacter: number, directionNext: boolean) => {
+  const getNextSymbol = (cursorLine: number, cursorCharacter: number, directionNext: boolean) => {
+    let nextSymbol;
     if(directionNext) {
       for (const symbol of tree) {
         const { start: member } = symbol.selectionRange;
         if (!(member.line < cursorLine || member.line === cursorLine && member.character <= cursorCharacter) && checkSymbolKindPermitted(symbol.kind)) {
-          symbolIndex = tree.indexOf(symbol)
+          nextSymbol = symbol;
           break;
         }
       }
     } else {
       for (const symbol of tree.slice(0).reverse()) {
         const { start: member } = symbol.selectionRange;
-        
         if ((member.line < cursorLine || (member.line === cursorLine && member.character < cursorCharacter)) && checkSymbolKindPermitted(symbol.kind)) {
-          symbolIndex = tree.indexOf(symbol)
+          nextSymbol = symbol;
           break;
         }
       }
     }
+    return nextSymbol;
   };
 
   const previousMemberCommand = vscode.commands.registerTextEditorCommand("gotoNextPreviousMember.previousMember", async (editor: vscode.TextEditor, edit, symbolKinds?: string[]) => {
@@ -146,9 +144,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const activeCursor = editor.selection.active;
-      setSymbolIndex(activeCursor.line, activeCursor.character, false);
-
-      symbol = tree[symbolIndex];
+      symbol = getNextSymbol(activeCursor.line, activeCursor.character, false);
 
       if (symbol) {
         editor.selection = new vscode.Selection(
@@ -189,9 +185,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const activeCursor = editor.selection.active;
-      setSymbolIndex(activeCursor.line, activeCursor.character, true);
-
-      symbol = tree[symbolIndex];
+      symbol = getNextSymbol(activeCursor.line, activeCursor.character, true);
 
       if (symbol) {
         editor.selection = new vscode.Selection(
