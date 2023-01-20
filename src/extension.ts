@@ -2,8 +2,8 @@
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
-  let symbolKindsSet: Set<string>;
-  let symbolIndex = 0;
+  let configuredSymbolKindsSet: Set<string>;
+  let workingSymbolKindsSet: Set<string>;
   let tree: Array<vscode.DocumentSymbol> = [];
   let dirtyTree = true;
 
@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
     symbolKindsArray = symbolKindsArray.map(key => key.toLowerCase());
 
     // Convert to a Set for faster lookups
-    symbolKindsSet = new Set<string>(symbolKindsArray);
+    configuredSymbolKindsSet = new Set<string>(symbolKindsArray);
 
     // Reload the symbol tree
     dirtyTree = true;
@@ -28,33 +28,33 @@ export function activate(context: vscode.ExtensionContext) {
 
   const checkSymbolKindPermitted = (symbolKind : vscode.SymbolKind) : boolean => {
     // https://code.visualstudio.com/api/references/vscode-api#SymbolKind
-    return symbolKindsSet.size === 0 || (
-      (symbolKind === vscode.SymbolKind.Array         && symbolKindsSet.has("array")        ) ||
-      (symbolKind === vscode.SymbolKind.Boolean       && symbolKindsSet.has("boolean")      ) ||
-      (symbolKind === vscode.SymbolKind.Class         && symbolKindsSet.has("class")        ) ||
-      (symbolKind === vscode.SymbolKind.Constant      && symbolKindsSet.has("constant")     ) ||
-      (symbolKind === vscode.SymbolKind.Constructor   && symbolKindsSet.has("constructor")  ) ||
-      (symbolKind === vscode.SymbolKind.Enum          && symbolKindsSet.has("enum")         ) ||
-      (symbolKind === vscode.SymbolKind.EnumMember    && symbolKindsSet.has("enummember")   ) ||
-      (symbolKind === vscode.SymbolKind.Event         && symbolKindsSet.has("event")        ) ||
-      (symbolKind === vscode.SymbolKind.Field         && symbolKindsSet.has("field")        ) ||
-      (symbolKind === vscode.SymbolKind.File          && symbolKindsSet.has("file")         ) ||
-      (symbolKind === vscode.SymbolKind.Function      && symbolKindsSet.has("function")     ) ||
-      (symbolKind === vscode.SymbolKind.Interface     && symbolKindsSet.has("interface")    ) ||
-      (symbolKind === vscode.SymbolKind.Key           && symbolKindsSet.has("key")          ) ||
-      (symbolKind === vscode.SymbolKind.Method        && symbolKindsSet.has("method")       ) ||
-      (symbolKind === vscode.SymbolKind.Module        && symbolKindsSet.has("module")       ) ||
-      (symbolKind === vscode.SymbolKind.Namespace     && symbolKindsSet.has("namespace")    ) ||
-      (symbolKind === vscode.SymbolKind.Null          && symbolKindsSet.has("null")         ) ||
-      (symbolKind === vscode.SymbolKind.Number        && symbolKindsSet.has("number")       ) ||
-      (symbolKind === vscode.SymbolKind.Object        && symbolKindsSet.has("object")       ) ||
-      (symbolKind === vscode.SymbolKind.Operator      && symbolKindsSet.has("operator")     ) ||
-      (symbolKind === vscode.SymbolKind.Package       && symbolKindsSet.has("package")      ) ||
-      (symbolKind === vscode.SymbolKind.Property      && symbolKindsSet.has("property")     ) ||
-      (symbolKind === vscode.SymbolKind.String        && symbolKindsSet.has("string")       ) ||
-      (symbolKind === vscode.SymbolKind.Struct        && symbolKindsSet.has("struct")       ) ||
-      (symbolKind === vscode.SymbolKind.TypeParameter && symbolKindsSet.has("typeparameter")) ||
-      (symbolKind === vscode.SymbolKind.Variable      && symbolKindsSet.has("variable")     )
+    return workingSymbolKindsSet.size === 0 || (
+      (symbolKind === vscode.SymbolKind.Array         && workingSymbolKindsSet.has("array")        ) ||
+      (symbolKind === vscode.SymbolKind.Boolean       && workingSymbolKindsSet.has("boolean")      ) ||
+      (symbolKind === vscode.SymbolKind.Class         && workingSymbolKindsSet.has("class")        ) ||
+      (symbolKind === vscode.SymbolKind.Constant      && workingSymbolKindsSet.has("constant")     ) ||
+      (symbolKind === vscode.SymbolKind.Constructor   && workingSymbolKindsSet.has("constructor")  ) ||
+      (symbolKind === vscode.SymbolKind.Enum          && workingSymbolKindsSet.has("enum")         ) ||
+      (symbolKind === vscode.SymbolKind.EnumMember    && workingSymbolKindsSet.has("enummember")   ) ||
+      (symbolKind === vscode.SymbolKind.Event         && workingSymbolKindsSet.has("event")        ) ||
+      (symbolKind === vscode.SymbolKind.Field         && workingSymbolKindsSet.has("field")        ) ||
+      (symbolKind === vscode.SymbolKind.File          && workingSymbolKindsSet.has("file")         ) ||
+      (symbolKind === vscode.SymbolKind.Function      && workingSymbolKindsSet.has("function")     ) ||
+      (symbolKind === vscode.SymbolKind.Interface     && workingSymbolKindsSet.has("interface")    ) ||
+      (symbolKind === vscode.SymbolKind.Key           && workingSymbolKindsSet.has("key")          ) ||
+      (symbolKind === vscode.SymbolKind.Method        && workingSymbolKindsSet.has("method")       ) ||
+      (symbolKind === vscode.SymbolKind.Module        && workingSymbolKindsSet.has("module")       ) ||
+      (symbolKind === vscode.SymbolKind.Namespace     && workingSymbolKindsSet.has("namespace")    ) ||
+      (symbolKind === vscode.SymbolKind.Null          && workingSymbolKindsSet.has("null")         ) ||
+      (symbolKind === vscode.SymbolKind.Number        && workingSymbolKindsSet.has("number")       ) ||
+      (symbolKind === vscode.SymbolKind.Object        && workingSymbolKindsSet.has("object")       ) ||
+      (symbolKind === vscode.SymbolKind.Operator      && workingSymbolKindsSet.has("operator")     ) ||
+      (symbolKind === vscode.SymbolKind.Package       && workingSymbolKindsSet.has("package")      ) ||
+      (symbolKind === vscode.SymbolKind.Property      && workingSymbolKindsSet.has("property")     ) ||
+      (symbolKind === vscode.SymbolKind.String        && workingSymbolKindsSet.has("string")       ) ||
+      (symbolKind === vscode.SymbolKind.Struct        && workingSymbolKindsSet.has("struct")       ) ||
+      (symbolKind === vscode.SymbolKind.TypeParameter && workingSymbolKindsSet.has("typeparameter")) ||
+      (symbolKind === vscode.SymbolKind.Variable      && workingSymbolKindsSet.has("variable")     )
     );
   };
 
@@ -70,9 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
       const flattenedSymbols: vscode.DocumentSymbol[] = [];
       const addSymbols = (flattenedSymbols: vscode.DocumentSymbol[], results: vscode.DocumentSymbol[]) => {
         results.forEach((symbol: vscode.DocumentSymbol) => {
-          if(checkSymbolKindPermitted(symbol.kind)) {
-            flattenedSymbols.push(symbol);
-          }
+          flattenedSymbols.push(symbol);
           if(symbol.children && symbol.children.length > 0) {
             addSymbols(flattenedSymbols, symbol.children);
           }
@@ -94,35 +92,46 @@ export function activate(context: vscode.ExtensionContext) {
   const activeEditorChangeListener = vscode.window.onDidChangeActiveTextEditor(e => {
     dirtyTree = true;
     tree = [];
-    symbolIndex = 0;
   });
 
   const documentChangeListener = vscode.workspace.onDidChangeTextDocument(e => {
     dirtyTree = true;
     tree = [];
-    symbolIndex = 0;
   });
 
-  const setSymbolIndex = (cursorLine: number, cursorCharacter: number, directionNext: boolean, prevSymbolIndex: number) => {
-    let member;
-
+  const getNextSymbol = (cursorLine: number, cursorCharacter: number, directionNext: boolean) => {
+    let nextSymbol;
     if(directionNext) {
-      symbolIndex = -1;
-      do {
-        symbolIndex++;
-        member = tree[symbolIndex].selectionRange.start;
-      } while ((member.line < cursorLine || member.line === cursorLine && member.character <= cursorCharacter || symbolIndex === prevSymbolIndex) && symbolIndex < tree.length - 1);
+      for (const symbol of tree) {
+        const { start: member } = symbol.selectionRange;
+        if (!(member.line < cursorLine || member.line === cursorLine && member.character <= cursorCharacter) && checkSymbolKindPermitted(symbol.kind)) {
+          nextSymbol = symbol;
+          break;
+        }
+      }
     } else {
-      symbolIndex = tree.length;
-      do {
-        symbolIndex--;
-        member = tree[symbolIndex].selectionRange.start;
-      } while ((member.line > cursorLine || member.line === cursorLine && member.character >= cursorCharacter || symbolIndex === prevSymbolIndex) && symbolIndex > 0);
+      for (const symbol of tree.slice(0).reverse()) {
+        const { start: member } = symbol.selectionRange;
+        if ((member.line < cursorLine || (member.line === cursorLine && member.character < cursorCharacter)) && checkSymbolKindPermitted(symbol.kind)) {
+          nextSymbol = symbol;
+          break;
+        }
+      }
     }
+    return nextSymbol;
   };
 
-  const previousMemberCommand = vscode.commands.registerTextEditorCommand("gotoNextPreviousMember.previousMember", async (editor: vscode.TextEditor) => {
+  const previousMemberCommand = vscode.commands.registerTextEditorCommand("gotoNextPreviousMember.previousMember", async (editor: vscode.TextEditor, edit, symbolKinds?: string[]) => {
       let symbol;
+      
+      // if we're provided symbols from a keybinding use them.
+      if (symbolKinds && symbolKinds.length > 0) {
+        workingSymbolKindsSet = new Set<string>(symbolKinds.map((s) => {
+          return s.toLowerCase();
+        }))
+      } else {
+        workingSymbolKindsSet = configuredSymbolKindsSet;
+      }
 
       if (tree.length === 0 || dirtyTree) {
         await refreshTree(editor);
@@ -135,30 +144,35 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const activeCursor = editor.selection.active;
-      setSymbolIndex(activeCursor.line, activeCursor.character, false, symbolIndex);
-
-      symbol = tree[symbolIndex];
-
-      const selectionRangeText = editor.document.getText(symbol.selectionRange);
-      const nameIndex = Math.max(0, selectionRangeText.indexOf(symbol.name));
+      symbol = getNextSymbol(activeCursor.line, activeCursor.character, false);
 
       if (symbol) {
         editor.selection = new vscode.Selection(
+          symbol.selectionRange.end.line,
+          symbol.selectionRange.end.character,
           symbol.selectionRange.start.line,
-          symbol.selectionRange.start.character + nameIndex,
-          symbol.selectionRange.start.line,
-          symbol.selectionRange.start.character + nameIndex
+          symbol.selectionRange.start.character,
         );
         vscode.commands.executeCommand("revealLine", {
-          lineNumber: symbol.selectionRange.start.line
+          lineNumber: symbol.selectionRange.start.line,
+          at: "center"
         });
       }
       vscode.window.setStatusBarMessage("Previous Member", 1000);
     }
   );
 
-  const nextMemberCommand = vscode.commands.registerTextEditorCommand("gotoNextPreviousMember.nextMember", async (editor: vscode.TextEditor) => {
+  const nextMemberCommand = vscode.commands.registerTextEditorCommand("gotoNextPreviousMember.nextMember", async (editor: vscode.TextEditor, edit, symbolKinds?: string[]) => {
       let symbol;
+
+      // if we're provided symbols from a keybinding use them.
+      if (symbolKinds && symbolKinds.length > 0) {
+        workingSymbolKindsSet = new Set<string>(symbolKinds.map((s) => {
+          return s.toLowerCase();
+        }))
+      } else {
+        workingSymbolKindsSet = configuredSymbolKindsSet;
+      }
 
       if (tree.length === 0 || dirtyTree) {
         await refreshTree(editor);
@@ -171,22 +185,18 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const activeCursor = editor.selection.active;
-      setSymbolIndex(activeCursor.line, activeCursor.character, true, symbolIndex);
-
-      symbol = tree[symbolIndex];
-
-      const selectionRangeText = editor.document.getText(symbol.selectionRange);
-      const nameIndex = Math.max(0, selectionRangeText.indexOf(symbol.name));
+      symbol = getNextSymbol(activeCursor.line, activeCursor.character, true);
 
       if (symbol) {
         editor.selection = new vscode.Selection(
+          symbol.selectionRange.end.line,
+          symbol.selectionRange.end.character,
           symbol.selectionRange.start.line,
-          symbol.selectionRange.start.character + nameIndex,
-          symbol.selectionRange.start.line,
-          symbol.selectionRange.start.character + nameIndex
+          symbol.selectionRange.start.character,
         );
         vscode.commands.executeCommand("revealLine", {
-          lineNumber: symbol.selectionRange.start.line
+          lineNumber: symbol.selectionRange.start.line,
+          at: "center"
         });
       }
       vscode.window.setStatusBarMessage("Next Member", 1000);
