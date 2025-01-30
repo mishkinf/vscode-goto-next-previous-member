@@ -12,47 +12,85 @@ This Extension provides two key commands to navigate up and down through the mem
 
 vscode@1.28.0+
 
-## Extension Settings
+## Commands and Settings
 
-This extension contributes the following customizable Keyboard Shortcuts:
+### Commands
 
-| Command                                      | Description               | Key Command |
-| -------------------------------------------- |:------------------------- | :-----------|
-| `gotoNextPreviousMember.previousMember`      | Move To Previous Member   | ctrl+up     |
-| `gotoNextPreviousMember.nextMember`          | Move To Next Member       | ctrl+down   |
+This extension provides the following commands that can be used in keyboard shortcuts:
 
-and the `gotoNextPreviousMember.symbolKinds` configuration setting which accepts an array containing any of the following values:
+| Command                                      | Description               | Default Shortcut |
+| -------------------------------------------- |:------------------------- | :---------------|
+| `gotoNextPreviousMember.previousMember`      | Move To Previous Member   | ctrl+up         |
+| `gotoNextPreviousMember.nextMember`          | Move To Next Member       | ctrl+down       |
 
-| Symbol Kind     |
-| --------------- |
-| "array"         |
-| "boolean"       |
-| "class"         |
-| "constant"      |
-| "constructor"   |
-| "enum"          |
-| "enummember"    |
-| "event"         |
-| "field"         |
-| "file"          |
-| "function"      |
-| "interface"     |
-| "key"           |
-| "method"        |
-| "module"        |
-| "namespace"     |
-| "null"          |
-| "number"        |
-| "object"        |
-| "operator"      |
-| "package"       |
-| "property"      |
-| "string"        |
-| "struct"        |
-| "typeparameter" |
-| "variable"      |
+You can customize these commands in your `keybindings.json` to target specific symbol types. For example:
 
-All of the symbol kinds specified in the array will be used when moving to the next/previous symbol, omitted symbol kinds will be skipped. If an empty array is provided, all symbol kinds will be used (this is the default).
+```json
+{
+    "key": "ctrl+shift+up",
+    "command": "gotoNextPreviousMember.previousMember",
+    "args": ["function", "method"]
+}
+```
+
+### Settings
+
+This extension provides the following settings that can be configured in your `settings.json`:
+
+1. `gotoNextPreviousMember.symbolKinds` (default: `[]` - all symbols included)
+   - An array of symbol types to include when navigating
+   - When empty or not set, all symbol types are included
+   - Example setting:
+
+   ```json
+   {
+       "gotoNextPreviousMember.symbolKinds": ["function", "class", "method"]
+   }
+   ```
+
+   Available symbol types:
+
+   | Symbol Kind     |
+   | --------------- |
+   | "array"         |
+   | "boolean"       |
+   | "class"         |
+   | "constant"      |
+   | "constructor"   |
+   | "enum"          |
+   | "enummember"    |
+   | "event"         |
+   | "field"         |
+   | "file"          |
+   | "function"      |
+   | "interface"     |
+   | "key"           |
+   | "method"        |
+   | "module"        |
+   | "namespace"     |
+   | "null"          |
+   | "number"        |
+   | "object"        |
+   | "operator"      |
+   | "package"       |
+   | "property"      |
+   | "string"        |
+   | "struct"        |
+   | "typeparameter" |
+   | "variable"      |
+
+2. `gotoNextPreviousMember.selectEntireSymbol` (default: `false`)
+   - Determines whether to select the entire symbol when navigating
+   - Example setting:
+
+   ```json
+   {
+       "gotoNextPreviousMember.selectEntireSymbol": true
+   }
+   ```
+
+   - When `true`: The entire symbol will be selected when navigating
+   - When `false`: Only the cursor will be moved to the start of the symbol
 
 ## Language Support
 
