@@ -93,6 +93,20 @@ This extension provides the following settings that can be configured in your `s
    - When `true`: The entire symbol will be selected when navigating
    - When `false`: Only the cursor will be moved to the start of the symbol
 
+3. `gotoNextPreviousMember.symbolPosition` (default: `"center"`)
+   - Controls where the symbol appears in the viewport when navigating
+   - Possible values:
+     - `"top"`: Position the symbol at the top of the viewport
+     - `"center"`: Position the symbol in the center of the viewport
+     - `"bottom"`: Position the symbol at the bottom of the viewport
+   - Example setting:
+
+   ```json
+   {
+       "gotoNextPreviousMember.symbolPosition": "top"
+   }
+   ```
+
 ## Language Support
 
 For the outline to work, the language support plugins need to support symbol information.

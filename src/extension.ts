@@ -8,11 +8,13 @@ export function activate(context: vscode.ExtensionContext) {
   let tree: Array<vscode.DocumentSymbol> = [];
   let dirtyTree = true;
   let selectEntireSymbol: boolean;
+  let symbolPosition: string;
 
   const reloadConfiguration = () => {
     // Get the array of allowed symbols from the config file
     let symbolKindsArray: Array<string> | undefined = vscode.workspace.getConfiguration().get<Array<string>>("gotoNextPreviousMember.symbolKinds");
     selectEntireSymbol = vscode.workspace.getConfiguration().get<boolean>("gotoNextPreviousMember.selectEntireSymbol", false);
+    symbolPosition = vscode.workspace.getConfiguration().get<string>("gotoNextPreviousMember.symbolPosition", "center");
 
     // If it's empty or undefined, create an empty Set to allow all symbols
     if (!symbolKindsArray || symbolKindsArray.length === 0) {
@@ -125,6 +127,13 @@ export function activate(context: vscode.ExtensionContext) {
     return nextSymbol;
   };
 
+  const revealSymbol = (symbol: vscode.DocumentSymbol) => {
+    vscode.commands.executeCommand("revealLine", {
+      lineNumber: symbol.selectionRange.start.line,
+      at: symbolPosition
+    });
+  };
+
   const previousMemberCommand = vscode.commands.registerTextEditorCommand("gotoNextPreviousMember.previousMember", async (editor: vscode.TextEditor, edit, symbolKinds?: string[]) => {
     let symbol;
 
@@ -167,10 +176,7 @@ export function activate(context: vscode.ExtensionContext) {
           symbol.selectionRange.start.character,
         );
       }
-      vscode.commands.executeCommand("revealLine", {
-        lineNumber: symbol.selectionRange.start.line,
-        at: "center"
-      });
+      revealSymbol(symbol);
     }
     vscode.window.setStatusBarMessage("Previous Member", 1000);
   }
@@ -218,17 +224,15 @@ export function activate(context: vscode.ExtensionContext) {
           symbol.selectionRange.start.character,
         );
       }
-      vscode.commands.executeCommand("revealLine", {
-        lineNumber: symbol.selectionRange.start.line,
-        at: "center"
-      });
+      revealSymbol(symbol);
     }
     vscode.window.setStatusBarMessage("Next Member", 1000);
   }
   );
 
   context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
-    if (e.affectsConfiguration('gotoNextPreviousMember.symbolKinds')) {
+    if (e.affectsConfiguration('gotoNextPreviousMember.symbolKinds') ||
+      e.affectsConfiguration('gotoNextPreviousMember.symbolPosition')) {
       if (vscode.window.activeTextEditor) {
         reloadConfiguration();
       }
